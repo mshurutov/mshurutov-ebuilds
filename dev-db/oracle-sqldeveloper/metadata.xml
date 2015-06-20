@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "http://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+<herd>no-herd</herd>
+<maintainer>
+  <email>shurutov@mail.ru</email>
+  <name>Michail Shurutov</name>
+</maintainer>
+<longdescription>Oracle SQL Developer is a free and fully supported  graphical tool for database development.</longdescription>
+</pkgmetadata>
