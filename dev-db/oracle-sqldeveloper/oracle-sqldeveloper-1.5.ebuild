@@ -10,7 +10,7 @@ MY_PN="${PN/oracle-/}"
 
 S=${WORKDIR}
 DESCRIPTION="Oracle SQL Developer"
-HOMEPAGE="http://www.oracle.com/technology/products/database/sql_developer/index.html"
+HOMEPAGE="http://www.oracle.com/technetwork/developer-tools/sql-developer/overview/index.html"
 SRC_URI="${MY_PA}.zip"
 
 LICENSE="OTN"
