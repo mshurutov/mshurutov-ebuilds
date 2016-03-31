@@ -47,3 +47,11 @@ src_install() {
 		doins ${FILESDIR}/powerpanel.service
 	fi
 }
+
+pkg_postinst()
+{
+	if use systemd; then
+		systemctl daemon-reload
+	fi
+}
+
