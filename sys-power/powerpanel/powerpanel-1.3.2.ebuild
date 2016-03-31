@@ -8,7 +8,7 @@ ZIPPV=${PV//./}
 DESCRIPTION="Software for CyberPower Systems UPS devices"
 HOMEPAGE="https://www.cyberpowersystems.com/products/software/pppe-linux-software"
 SRC_URI="x86? ( https://dl4jz3rbrsfum.cloudfront.net/software/${PN}-${ZIPPV}-i386.tar.gz )
-		amd64& ( https://dl4jz3rbrsfum.cloudfront.net/software/${PN}-${ZIPPV}-x86_64.tar.gz )"
+		amd64? ( https://dl4jz3rbrsfum.cloudfront.net/software/${PN}-${ZIPPV}-x86_64.tar.gz )"
 
 LICENSE="PowerPanel"
 SLOT="0"
@@ -18,7 +18,7 @@ IUSE="systemd"
 DEPEND=""
 RDEPEND="virtual/libusb:0"
 
-src_install {
+src_install() {
 	dosbin bin/pwrstat{,d}
 	doman doc/pwrstat{,d}.8
 	dodoc doc/{README,LICENSE,install-guide,user-manual,deploy-guide}
