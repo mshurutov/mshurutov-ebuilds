@@ -11,10 +11,11 @@ inherit eutils flag-o-matic linux-info multilib pam prefix python-single-r1 \
 
 KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~ia64 ~mips ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86 ~amd64-fbsd ~sparc-fbsd ~x86-fbsd ~ppc-macos ~x86-solaris"
 
-SLOT="$(get_version_component_range 1-2)"
-MY_SLOT="pro-${SLOT}"
+SLOT="$(get_version_component_range 1-3)"
+MAJOR_VERSION="$(get_version_component_range 1-2)"
+SLOT="${SLOT%\.}"
 
-SRC_URI="http://repo.postgrespro.ru/pgpro-9.5/src/postgrespro-9.5.3.2.tar.bz2"
+SRC_URI="http://repo.postgrespro.ru/pgpro-${MAJOR_VERSION}/src/${P}.tar.bz2"
 
 LICENSE="POSTGRESQL GPL-2"
 DESCRIPTION="PostgreSQL RDBMS"
@@ -182,9 +183,9 @@ src_install() {
 	insinto /etc/postgrespro-${SLOT}
 	newins src/bin/psql/psqlrc.sample psqlrc
 
-	dodir /etc/eselect/postgrespro/slots/${SLOT}
+	dodir /etc/eselect/postgresql/slots/${SLOT}
 	echo "postgres_ebuilds=\"\${postgres_ebuilds} ${PF}\"" > \
-		"${ED}/etc/eselect/postgrespro/slots/${SLOT}/base"
+		"${ED}/etc/eselect/postgresql/slots/${SLOT}/base"
 
 	use static-libs || find "${ED}" -name '*.a' -delete
 
@@ -280,7 +281,7 @@ pkg_config() {
 		&& source "${EROOT%/}/etc/conf.d/postgrespro-${SLOT}"
 	[[ -z "${PGDATA}" ]] && PGDATA="${EROOT%/}/etc/postgrespro-${SLOT}/"
 	[[ -z "${DATA_DIR}" ]] \
-		&& DATA_DIR="${EROOT%/}/var/lib/postgrespro/${MY_SLOT}/data"
+		&& DATA_DIR="${EROOT%/}/var/lib/postgrespro/${SLOT}/data"
 
 	# environment.bz2 may not contain the same locale as the current system
 	# locale. Unset and source from the current system locale.
@@ -308,8 +309,8 @@ pkg_config() {
 	einfo "    ${EROOT%/}/etc/conf.d/postgrespro-${SLOT}"
 	einfo
 	einfo "Information on options that can be passed to initdb are found at:"
-	einfo "    http://www.postgresql.org/docs/${SLOT}/static/creating-cluster.html"
-	einfo "    http://www.postgresql.org/docs/${SLOT}/static/app-initdb.html"
+	einfo "    http://www.postgresql.org/docs/${MAJOR_VERSION}/static/creating-cluster.html"
+	einfo "    http://www.postgresql.org/docs/${MAJOR_VERSION}/static/app-initdb.html"
 	einfo
 	einfo "PG_INITDB_OPTS is currently set to:"
 	if [[ -z "${PG_INITDB_OPTS}" ]] ; then
