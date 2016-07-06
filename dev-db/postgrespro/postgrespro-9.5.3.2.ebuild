@@ -13,7 +13,6 @@ KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~ia64 ~mips ~ppc ~ppc64 ~s390 ~sh ~spa
 
 SLOT="$(get_version_component_range 1-3)"
 MAJOR_VERSION="$(get_version_component_range 1-2)"
-SLOT="${SLOT%\.}"
 
 SRC_URI="http://repo.postgrespro.ru/pgpro-${MAJOR_VERSION}/src/${P}.tar.bz2"
 
