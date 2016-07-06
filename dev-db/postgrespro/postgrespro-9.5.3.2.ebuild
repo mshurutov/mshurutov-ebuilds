@@ -105,34 +105,6 @@ pkg_setup() {
 	use python && python-single-r1_pkg_setup
 }
 
-src_prepare() {
-	# Work around PPC{,64} compilation bug where bool is already defined
-	#sed '/#ifndef __cplusplus/a #undef bool' -i src/include/c.h || die
-
-	# Set proper run directory
-	#sed "s|\(PGSOCKET_DIR\s\+\)\"/tmp\"|\1\"${EPREFIX}/run/postgresql\"|" \
-	#	-i src/include/pg_config_manual.h || die
-
-	# Rely on $PATH being in the proper order so that the correct
-	# install program is used for modules utilizing PGXS in both
-	# hardened and non-hardened environments. (Bug #528786)
-	#sed 's/@install_bin@/install -c/' -i src/Makefile.global.in || die
-
-	#use server || epatch "${FILESDIR}/${PN}-${SLOT}-no-server.patch"
-
-	# Fix bug 486556 where the server would crash at start up because of
-	# an infinite loop caused by a self-referencing symlink.
-	#epatch "${FILESDIR}/postgresql-9.2-9.4-tz-dir-overflow.patch"
-
-	#if use pam ; then
-	#	sed -e "s/\(#define PGSQL_PAM_SERVICE \"postgresql\)/\1-${SLOT}/" \
-	#		-i src/backend/libpq/auth.c || \
-	#		die 'PGSQL_PAM_SERVICE rename failed.'
-	#fi
-
-	epatch_user
-}
-
 src_configure() {
 	case ${CHOST} in
 		*-darwin*|*-solaris*)
@@ -210,9 +182,9 @@ src_install() {
 	insinto /etc/postgrespro-${SLOT}
 	newins src/bin/psql/psqlrc.sample psqlrc
 
-	dodir /etc/eselect/postgresql/slots/${MY_SLOT}
+	dodir /etc/eselect/postgrespro/slots/${SLOT}
 	echo "postgres_ebuilds=\"\${postgres_ebuilds} ${PF}\"" > \
-		"${ED}/etc/eselect/postgresql/slots/${MY_SLOT}/base"
+		"${ED}/etc/eselect/postgrespro/slots/${SLOT}/base"
 
 	use static-libs || find "${ED}" -name '*.a' -delete
 
@@ -308,7 +280,7 @@ pkg_config() {
 		&& source "${EROOT%/}/etc/conf.d/postgrespro-${SLOT}"
 	[[ -z "${PGDATA}" ]] && PGDATA="${EROOT%/}/etc/postgrespro-${SLOT}/"
 	[[ -z "${DATA_DIR}" ]] \
-		&& DATA_DIR="${EROOT%/}/var/lib/postgresql/${SLOT}/data"
+		&& DATA_DIR="${EROOT%/}/var/lib/postgrespro/${MY_SLOT}/data"
 
 	# environment.bz2 may not contain the same locale as the current system
 	# locale. Unset and source from the current system locale.
