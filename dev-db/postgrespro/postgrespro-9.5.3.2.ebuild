@@ -4,16 +4,17 @@
 
 EAPI="5"
 
-PYTHON_COMPAT=( python{2_7,3_4} )
+PYTHON_COMPAT=( python{2_7,3_4,3_5} )
 
 inherit eutils flag-o-matic linux-info multilib pam prefix python-single-r1 \
 		systemd user versionator
 
-KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~mips ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86 ~amd64-fbsd ~sparc-fbsd ~x86-fbsd ~ppc-macos ~x86-solaris"
+KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~ia64 ~mips ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86 ~amd64-fbsd ~sparc-fbsd ~x86-fbsd ~ppc-macos ~x86-solaris"
 
 SLOT="$(get_version_component_range 1-2)"
+MY_SLOT="pro-${SLOT}"
 
-SRC_URI="mirror://postgresql/source/v${PV}/postgresql-${PV}.tar.bz2"
+SRC_URI="http://repo.postgrespro.ru/pgpro-9.5/src/postgrespro-9.5.3.2.tar.bz2"
 
 LICENSE="POSTGRESQL GPL-2"
 DESCRIPTION="PostgreSQL RDBMS"
@@ -53,10 +54,32 @@ ssl? (
 	libressl? ( dev-libs/libressl:= )
 )
 tcl? ( >=dev-lang/tcl-8:0= )
-uuid? ( dev-libs/ossp-uuid )
 xml? ( dev-libs/libxml2 dev-libs/libxslt )
 zlib? ( sys-libs/zlib )
 "
+
+# uuid flags -- depend on sys-apps/util-linux for Linux libcs, or if no
+# supported libc in use depend on dev-libs/ossp-uuid. For BSD systems,
+# the libc includes UUID functions.
+UTIL_LINUX_LIBC=( elibc_{glibc,uclibc,musl} )
+BSD_LIBC=( elibc_{Free,Net,Open}BSD )
+
+nest_usedep() {
+	local front back
+	while [[ ${#} -gt 1 ]]; do
+		front+="${1}? ( "
+		back+=" )"
+		shift
+	done
+	echo "${front}${1}${back}"
+}
+
+IUSE+=" ${UTIL_LINUX_LIBC[@]} ${BSD_LIBC[@]}"
+CDEPEND+="
+uuid? (
+	${UTIL_LINUX_LIBC[@]/%/? ( sys-apps/util-linux )}
+	$(nest_usedep ${UTIL_LINUX_LIBC[@]/#/!} ${BSD_LIBC[@]/#/!} dev-libs/ossp-uuid)
+)"
 
 DEPEND="${CDEPEND}
 !!<sys-apps/sandbox-2.0
@@ -84,23 +107,28 @@ pkg_setup() {
 
 src_prepare() {
 	# Work around PPC{,64} compilation bug where bool is already defined
-	sed '/#ifndef __cplusplus/a #undef bool' -i src/include/c.h || die
+	#sed '/#ifndef __cplusplus/a #undef bool' -i src/include/c.h || die
 
 	# Set proper run directory
-	sed "s|\(PGSOCKET_DIR\s\+\)\"/tmp\"|\1\"${EPREFIX}/run/postgresql\"|" \
-		-i src/include/pg_config_manual.h || die
+	#sed "s|\(PGSOCKET_DIR\s\+\)\"/tmp\"|\1\"${EPREFIX}/run/postgresql\"|" \
+	#	-i src/include/pg_config_manual.h || die
 
-	use server || epatch "${FILESDIR}/${PN}-${SLOT}-no-server.patch"
+	# Rely on $PATH being in the proper order so that the correct
+	# install program is used for modules utilizing PGXS in both
+	# hardened and non-hardened environments. (Bug #528786)
+	#sed 's/@install_bin@/install -c/' -i src/Makefile.global.in || die
+
+	#use server || epatch "${FILESDIR}/${PN}-${SLOT}-no-server.patch"
 
 	# Fix bug 486556 where the server would crash at start up because of
 	# an infinite loop caused by a self-referencing symlink.
-	epatch "${FILESDIR}/postgresql-9.2-9.4-tz-dir-overflow.patch"
+	#epatch "${FILESDIR}/postgresql-9.2-9.4-tz-dir-overflow.patch"
 
-	if use pam ; then
-		sed -e "s/\(#define PGSQL_PAM_SERVICE \"postgresql\)/\1-${SLOT}/" \
-			-i src/backend/libpq/auth.c || \
-			die 'PGSQL_PAM_SERVICE rename failed.'
-	fi
+	#if use pam ; then
+	#	sed -e "s/\(#define PGSQL_PAM_SERVICE \"postgresql\)/\1-${SLOT}/" \
+	#		-i src/backend/libpq/auth.c || \
+	#		die 'PGSQL_PAM_SERVICE rename failed.'
+	#fi
 
 	epatch_user
 }
@@ -117,18 +145,29 @@ src_configure() {
 
 	local PO="${EPREFIX%/}"
 
+	local i uuid_config=""
+	if use uuid; then
+		for i in ${UTIL_LINUX_LIBC[@]}; do
+			use ${i} && uuid_config="--with-uuid=e2fs"
+		done
+		for i in ${BSD_LIBC[@]}; do
+			use ${i} && uuid_config="--with-uuid=bsd"
+		done
+		[[ -z $uuid_config ]] && uuid_config="--with-uuid=ossp"
+	fi
+
 	econf \
-		--prefix="${PO}/usr/$(get_libdir)/postgresql-${SLOT}" \
-		--datadir="${PO}/usr/share/postgresql-${SLOT}" \
+		--prefix="${PO}/usr/$(get_libdir)/postgrespro-${SLOT}" \
+		--datadir="${PO}/usr/share/postgrespro-${SLOT}" \
 		--docdir="${PO}/usr/share/doc/${PF}" \
-		--includedir="${PO}/usr/include/postgresql-${SLOT}" \
-		--mandir="${PO}/usr/share/postgresql-${SLOT}/man" \
-		--sysconfdir="${PO}/etc/postgresql-${SLOT}" \
+		--includedir="${PO}/usr/include/postgrespro-${SLOT}" \
+		--mandir="${PO}/usr/share/postgrespro-${SLOT}/man" \
+		--sysconfdir="${PO}/etc/postgrespro-${SLOT}" \
 		--with-system-tzdata="${PO}/usr/share/zoneinfo" \
+		$(use_enable !alpha spinlocks) \
 		$(use_enable !pg_legacytimestamp integer-datetimes) \
 		$(use_enable threads thread-safety) \
 		$(use_with kerberos gssapi) \
-		$(use_with kerberos krb5) \
 		$(use_with ldap) \
 		$(use_with pam) \
 		$(use_with perl) \
@@ -136,7 +175,7 @@ src_configure() {
 		$(use_with readline) \
 		$(use_with ssl openssl) \
 		$(use_with tcl) \
-		$(use_with uuid ossp-uuid) \
+		${uuid_config} \
 		$(use_with xml libxml) \
 		$(use_with xml libxslt) \
 		$(use_with zlib) \
@@ -158,22 +197,22 @@ src_install() {
 	# they'll be generated from source before being installed so we
 	# manually install man pages.
 	# We use ${SLOT} instead of doman for postgresql.eselect
-	insinto /usr/share/postgresql-${SLOT}/man/
+	insinto /usr/share/postgrespro-${SLOT}/man/
 	doins -r doc/src/sgml/man{1,3,7}
 	if ! use server; then
 		# Remove man pages for non-existent binaries
 		for m in {initdb,pg_{controldata,ctl,resetxlog},post{gres,master}}; do
-			rm "${ED}/usr/share/postgresql-${SLOT}/man/man1/${m}.1"
+			rm "${ED}/usr/share/postgrespro-${SLOT}/man/man1/${m}.1"
 		done
 	fi
-	docompress /usr/share/postgresql-${SLOT}/man/man{1,3,7}
+	docompress /usr/share/postgrespro-${SLOT}/man/man{1,3,7}
 
-	insinto /etc/postgresql-${SLOT}
+	insinto /etc/postgrespro-${SLOT}
 	newins src/bin/psql/psqlrc.sample psqlrc
 
-	dodir /etc/eselect/postgresql/slots/${SLOT}
+	dodir /etc/eselect/postgresql/slots/${MY_SLOT}
 	echo "postgres_ebuilds=\"\${postgres_ebuilds} ${PF}\"" > \
-		"${ED}/etc/eselect/postgresql/slots/${SLOT}/base"
+		"${ED}/etc/eselect/postgresql/slots/${MY_SLOT}/base"
 
 	use static-libs || find "${ED}" -name '*.a' -delete
 
@@ -190,7 +229,7 @@ src_install() {
 			"${FILESDIR}/${PN}.confd" | newconfd - ${PN}-${SLOT}
 
 		sed -e "s|@SLOT@|${SLOT}|g" -e "s|@LIBDIR@|$(get_libdir)|g" \
-			"${FILESDIR}/${PN}.init" | newinitd - ${PN}-${SLOT}
+			"${FILESDIR}/${PN}.init-9.3" | newinitd - ${PN}-${SLOT}
 
 		sed -e "s|@SLOT@|${SLOT}|g" -e "s|@LIBDIR@|$(get_libdir)|g" \
 			"${FILESDIR}/${PN}.service" | \
@@ -210,8 +249,13 @@ src_install() {
 pkg_postinst() {
 	postgresql-config update
 
+	if use alpha && use server ; then
+		ewarn "PostgreSQL 9.5+ no longer has native spinlock support on Alpha platforms."
+		ewarn "As a result, performance will be extremely degraded."
+	fi
+
 	elog "If you need a global psqlrc-file, you can place it in:"
-	elog "    ${EROOT%/}/etc/postgresql-${SLOT}/"
+	elog "    ${EROOT%/}/etc/postgrespro-${SLOT}/"
 
 	if [[ -z ${REPLACING_VERSIONS} ]] ; then
 		elog
@@ -234,7 +278,7 @@ pkg_postinst() {
 		elog
 		elog "Before initializing the database, you may want to edit PG_INITDB_OPTS"
 		elog "so that it contains your preferred locale in:"
-		elog "    ${EROOT%/}/etc/conf.d/postgresql-${SLOT}"
+		elog "    ${EROOT%/}/etc/conf.d/postgrespro-${SLOT}"
 		elog
 		elog "Then, execute the following command to setup the initial database"
 		elog "environment:"
@@ -260,9 +304,9 @@ pkg_postrm() {
 pkg_config() {
 	use server || die "USE flag 'server' not enabled. Nothing to configure."
 
-	[[ -f "${EROOT%/}/etc/conf.d/postgresql-${SLOT}" ]] \
-		&& source "${EROOT%/}/etc/conf.d/postgresql-${SLOT}"
-	[[ -z "${PGDATA}" ]] && PGDATA="${EROOT%/}/etc/postgresql-${SLOT}/"
+	[[ -f "${EROOT%/}/etc/conf.d/postgrespro-${SLOT}" ]] \
+		&& source "${EROOT%/}/etc/conf.d/postgrespro-${SLOT}"
+	[[ -z "${PGDATA}" ]] && PGDATA="${EROOT%/}/etc/postgrespro-${SLOT}/"
 	[[ -z "${DATA_DIR}" ]] \
 		&& DATA_DIR="${EROOT%/}/var/lib/postgresql/${SLOT}/data"
 
@@ -289,7 +333,7 @@ pkg_config() {
 	fi
 
 	einfo "You can modify the paths and options passed to initdb by editing:"
-	einfo "    ${EROOT%/}/etc/conf.d/postgresql-${SLOT}"
+	einfo "    ${EROOT%/}/etc/conf.d/postgrespro-${SLOT}"
 	einfo
 	einfo "Information on options that can be passed to initdb are found at:"
 	einfo "    http://www.postgresql.org/docs/${SLOT}/static/creating-cluster.html"
@@ -336,9 +380,9 @@ pkg_config() {
 	einfo "Initializing the database ..."
 
 	if [[ ${EUID} == 0 ]] ; then
-		su postgres -c "${EROOT%/}/usr/$(get_libdir)/postgresql-${SLOT}/bin/initdb -D \"${DATA_DIR}\" ${PG_INITDB_OPTS}"
+		su postgres -c "${EROOT%/}/usr/$(get_libdir)/postgrespro-${SLOT}/bin/initdb -D \"${DATA_DIR}\" ${PG_INITDB_OPTS}"
 	else
-		"${EROOT%/}"/usr/$(get_libdir)/postgresql-${SLOT}/bin/initdb -U postgres -D "${DATA_DIR}" ${PG_INITDB_OPTS}
+		"${EROOT%/}"/usr/$(get_libdir)/postgrespro-${SLOT}/bin/initdb -U postgres -D "${DATA_DIR}" ${PG_INITDB_OPTS}
 	fi
 
 	if [[ "${DATA_DIR%/}" != "${PGDATA%/}" ]] ; then
@@ -372,7 +416,7 @@ pkg_config() {
 		einfo "Or move the configuration files back:"
 		einfo "mv ${PGDATA}*.conf ${DATA_DIR}"
 	else
-		einfo "You should use the '${EROOT%/}/etc/init.d/postgresql-${SLOT}' script to run PostgreSQL"
+		einfo "You should use the '${EROOT%/}/etc/init.d/postgrespro-${SLOT}' script to run PostgreSQL"
 		einfo "instead of 'pg_ctl'."
 	fi
 }
