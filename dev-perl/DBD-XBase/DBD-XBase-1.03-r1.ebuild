@@ -14,7 +14,7 @@ SLOT="0"
 KEYWORDS="~amd64"
 IUSE="test"
 
-DEPEND="dev-perl/perl-Module-Build
+DEPEND="dev-perl/Module-Build
 	test? ( virtual/perl-Test-Simple )
 "
 RDEPEND=""
