@@ -50,6 +50,7 @@ src_prepare() {
 src_configure() {
 	econf \
 		--disable-experimental \
+		--disable-zlib-vcheck \
 		--disable-fanotify \
 		--enable-id-check \
 		--with-dbdir="${EPREFIX}"/var/lib/clamav \
