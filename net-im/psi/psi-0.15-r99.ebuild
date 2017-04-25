@@ -51,7 +51,7 @@ DOC_CONTENTS='Psi+ support(USE="extras") was removed from ebuild since 0.15'
 FORCE_PRINT_ELOG=1
 
 src_prepare() {
-	epatch "${FILESDIR}/${PN}-0.14-drop-debug-cflags.patch"
+	#epatch "${FILESDIR}/${PN}-0.14-drop-debug-cflags.patch"
 	epatch_user
 
 	qconf || die "Failed to create ./configure."
