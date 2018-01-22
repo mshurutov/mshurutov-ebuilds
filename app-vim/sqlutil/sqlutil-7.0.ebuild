@@ -14,6 +14,8 @@ IUSE=""
 MY_PV="${PV/\./}0"
 SRC_URI="http://www.vim.org/scripts/download_script.php?src_id=19113 -> ${PN}_${MY_PV}.zip"
 
+S=${WORKDIR}
+
 RDEPEND="
 	app-vim/autoalign
 	"
