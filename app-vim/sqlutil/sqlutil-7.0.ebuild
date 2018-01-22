@@ -11,14 +11,11 @@ LICENSE="vim"
 KEYWORDS="~alpha ~amd64 ~ia64 ~mips ~ppc ~sparc ~x86"
 IUSE=""
 
-if [[ ${PV} != 9999* ]] ; then
-	SRC_URI="mirror://gentoo/${P}.tar.xz
-		https://dev.gentoo.org/~chutzpah/vim/${P}.tar.xz"
-fi
+MY_PV="${PV/\./}0"
+SRC_URI="http://www.vim.org/scripts/download_script.php?src_id=19113 -> ${PN}_${MY_PV}.zip"
 
-DEPEND="app-arch/xz-utils"
 RDEPEND="
-	>=app-vim/autoalign
+	app-vim/autoalign
 	"
 
 VIM_PLUGIN_HELPFILES="autoalign"
