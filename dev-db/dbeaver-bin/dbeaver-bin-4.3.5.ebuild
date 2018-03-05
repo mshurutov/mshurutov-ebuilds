@@ -13,8 +13,8 @@ DEPEND=">=virtual/jre-1.8:*
 	>=x11-libs/gtk+-2:2"
 RDEPEND="${DEPEND}
 	postgres? ( dev-java/jdbc-postgresql )
-	mysql? ( jdbc-mysql )
-	mssql? ( jdbc-mssqlserver )
+	mysql? ( dev-java/jdbc-mysql )
+	mssql? ( dev-java/jdbc-mssqlserver )
 "
 
 S="${WORKDIR}/dbeaver"
