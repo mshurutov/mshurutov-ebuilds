@@ -8,10 +8,15 @@ SRC_URI="http://dbeaver.jkiss.org/files/${PV}/dbeaver-ce-${PV}-linux.gtk.x86_64.
 LICENSE="GPL-2"
 SLOT="0"
 KEYWORDS="~amd64"
-IUSE=""
+IUSE="postgres mysql mssql"
 DEPEND=">=virtual/jre-1.8:*
 	>=x11-libs/gtk+-2:2"
-RDEPEND="${DEPEND}"
+RDEPEND="${DEPEND}
+	postgres? ( dev-java/jdbc-postgresql )
+	mysql? ( jdbc-mysql )
+	mssql? ( jdbc-mssqlserver )
+"
+
 S="${WORKDIR}/dbeaver"
 
 src_install() {
