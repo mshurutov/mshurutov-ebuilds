@@ -11,11 +11,7 @@ KEYWORDS="~amd64"
 IUSE="postgres mysql mssql"
 DEPEND=">=virtual/jre-1.8:*
 	>=x11-libs/gtk+-2:2"
-RDEPEND="${DEPEND}
-	postgres? ( dev-java/jdbc-postgresql )
-	mysql? ( dev-java/jdbc-mysql )
-	mssql? ( dev-java/jdbc-mssqlserver )
-"
+RDEPEND="${DEPEND}"
 
 S="${WORKDIR}/dbeaver"
 
