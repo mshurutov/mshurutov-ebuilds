@@ -15,11 +15,13 @@ RDEPEND="${DEPEND}"
 
 S="${WORKDIR}/dbeaver"
 
+# donis - old
+#		"artifacts.xml" \
+
 src_install() {
 	insinto "/opt/${P}"
 	exeinto "/opt/${P}"
 	doins -r \
-		"artifacts.xml" \
 		"dbeaver.desktop" \
 		"dbeaver.ini" \
 		"dbeaver.png" \
