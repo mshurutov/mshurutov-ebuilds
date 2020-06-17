@@ -5,10 +5,11 @@
 EAPI=5
 
 ZIPPV=${PV//./}
+MY_PN="PPL"
 DESCRIPTION="Software for CyberPower Systems UPS devices"
 HOMEPAGE="https://www.cyberpowersystems.com/products/software/pppe-linux-software"
-SRC_URI="x86? ( https://dl4jz3rbrsfum.cloudfront.net/software/${PN}-${ZIPPV}-i386.tar.gz )
-		amd64? ( https://dl4jz3rbrsfum.cloudfront.net/software/${PN}-${ZIPPV}-x86_64.tar.gz )"
+SRC_URI="x86? ( https://dl4jz3rbrsfum.cloudfront.net/software/${MY_PN}-${PV}-32bit.tar.gz )
+		amd64? ( https://dl4jz3rbrsfum.cloudfront.net/software/${MY_PN}-${PV}-64bit.tar.gz )"
 
 LICENSE="PowerPanel"
 SLOT="0"
@@ -42,8 +43,7 @@ src_install() {
 	fperms 700 /etc/pwrstatd.conf
 
 	if use systemd; then
-		dodir /usr/lib64/systemd/system/
-		insinto /usr/lib64/systemd/system/
+		insinto /lib/systemd/system/
 		doins ${FILESDIR}/powerpanel.service
 	fi
 }
