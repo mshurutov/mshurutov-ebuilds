@@ -43,7 +43,7 @@ src_install() {
 	fperms 700 /etc/pwrstatd.conf
 
 	if use systemd; then
-		dodir /usr/lib64/systemd/system/
+		dodir /lib/systemd/system/
 		insinto /usr/lib64/systemd/system/
 		doins ${FILESDIR}/powerpanel.service
 	fi
