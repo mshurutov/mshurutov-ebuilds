@@ -38,10 +38,10 @@ BDEPEND="
 
 S="${WORKDIR}/${MY_P}"
 
-PATCHES=(
-	"${FILESDIR}"/${P}-guile-2.2.patch
-	"${FILESDIR}"/${P}-fno-common.patch
-)
+#PATCHES=(
+#	"${FILESDIR}"/${P}-guile-2.2.patch
+#	"${FILESDIR}"/${P}-fno-common.patch
+#)
 
 src_prepare() {
 	default
