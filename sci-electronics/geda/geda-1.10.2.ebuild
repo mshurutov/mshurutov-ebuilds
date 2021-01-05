@@ -15,33 +15,35 @@ SRC_URI="http://ftp.geda-project.org/${MY_PN}/stable/v$(ver_cut 1-2)/${PV}/${MY_
 LICENSE="GPL-2"
 SLOT="0"
 KEYWORDS="~amd64 ~ppc ~x86"
-IUSE="debug doc examples nls stroke threads"
+IUSE="debug doc examples fam nls stroke threads"
 
-RDEPEND="
+CDEPEND="
 	dev-libs/glib:2
-	dev-scheme/guile
-	sci-electronics/electronics-menu
-	x11-libs/cairo
-	x11-libs/gdk-pixbuf
 	x11-libs/gtk+:2
 	x11-libs/pango
+	>=x11-libs/cairo-1.2.0
+	x11-libs/gdk-pixbuf
+	>=dev-scheme/guile-2.0.0
 	nls? ( virtual/libintl )
-	stroke? ( dev-libs/libstroke )"
+	stroke? ( >=dev-libs/libstroke-0.5.1 )
+	fam? ( app-admin/gamin )
+	dev-lang/python:2.7"
 
-DEPEND="${RDEPEND}
-	dev-util/desktop-file-utils
-	x11-misc/shared-mime-info"
-BDEPEND="
+DEPEND="${CDEPEND}
 	sys-apps/groff
+	dev-util/desktop-file-utils
+	x11-misc/shared-mime-info
 	virtual/pkgconfig
-	nls? ( sys-devel/gettext )"
+	nls? ( >=sys-devel/gettext-0.16 )"
 
-S="${WORKDIR}/${MY_P}"
+RDEPEND="${CDEPEND}
+	sci-electronics/electronics-menu"
 
-#PATCHES=(
-#	"${FILESDIR}"/${P}-guile-2.2.patch
-#	"${FILESDIR}"/${P}-fno-common.patch
-#)
+S=${WORKDIR}/${MY_P}
+
+DOCS="AUTHORS NEWS README"
+
+PATCHES=( "${FILESDIR}"/${P}-maybe-uninitialized.patch )
 
 src_prepare() {
 	default
@@ -57,39 +59,46 @@ src_prepare() {
 	sed -i -e 's/gsymcheck_LDFLAGS =/gsymcheck_LDFLAGS = $(GIO_LIBS)/' \
 		gsymcheck/src/Makefile.am || die
 
-	sed -i -e 's/gnetlist_LDFLAGS =/gnetlist_LDFLAGS = $(GIO_LIBS)/' \
-		gnetlist/src/Makefile.am || die
+	sed -i -e 's/gnetlist_legacy_LDFLAGS =/gnetlist_legacy_LDFLAGS = $(GIO_LIBS)/' \
+		gnetlist-legacy/src/Makefile.am || die
 
-	sed -i -e 's/gschlas_LDFLAGS =/gschlas_LDFLAGS = $(GIO_LIBS)/' \
-		utils/gschlas/Makefile.am || die
-
-	sed -i -e 's/sarlacc_schem_LDFLAGS =/sarlacc_schem_LDFLAGS = $(GIO_LIBS)/' \
-		contrib/sarlacc_schem/Makefile.am || die
-
-	rm docs/wiki/media/geda/gsch2pcb-libs.tar.gz || die
+	sed -i -e 's/python2/python-2.7/' \
+		xorn/configure.ac || die
 
 	eautoreconf
 }
 
 src_configure() {
-	local myconf=(
-		--disable-doxygen
-		--disable-rpath
-		--disable-update-xdg-database
-		$(use_enable debug assert)
-		$(use_enable nls)
-		$(use_enable threads threads posix)
-		$(use_with stroke libstroke)
-	)
-
-	econf "${myconf[@]}"
+	econf \
+		--docdir=/usr/share/doc/${PF} \
+		$(use_enable threads threads posix) \
+		$(use_with stroke libstroke) \
+		$(use_enable nls) \
+		$(use_enable debug assert) \
+		--disable-doxygen \
+		--disable-rpath \
+		--disable-update-xdg-database \
+		$(use_with fam libfam)
 }
 
 src_test() {
-	emake -j1 check
+	emake check
 }
 
-src_install() {
-	default
-	find "${ED}" -name '*.la' -delete || die
+pkg_preinst() {
+	gnome2_icon_savelist
 }
+
+pkg_postinst() {
+	xdg_desktop_database_update
+	xdg_mimeinfo_database_update
+	gnome2_icon_cache_update
+}
+
+pkg_postrm() {
+	xdg_desktop_database_update
+	xdg_mimeinfo_database_update
+	gnome2_icon_cache_update
+}
+
+
