@@ -33,8 +33,10 @@ src_install() {
 
 	newinitd script/default_pwrstatd pwrstatd
 
-	into /usr/local/lib/powerpanel
-	dolib.so lib/*so
+	insinto /usr/local/lib/powerpanel
+	doins lib/*so*
+	dosym /usr/local/lib/powerpanel/libjson-c.so.5.1.0 /usr/local/lib/powerpanel/libjson-c.so.5
+	dosym /usr/local/lib/powerpanel/libpaho-mqtt3cs.so.1.3.1 /usr/local/lib/powerpanel/libpaho-mqtt3cs.so.1
 
 
 	fowners root:root /usr/sbin/pwrstat{,d}
