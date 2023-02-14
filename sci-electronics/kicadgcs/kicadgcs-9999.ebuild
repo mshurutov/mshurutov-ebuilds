@@ -16,7 +16,14 @@ DEPEND="sci-electronics/kicad
 RDEPEND="${DEPEND}"
 BDEPEND=""
 
+S="${WORKDIR}/library"
+
+src_prepare() {
+	mv Audio{,_rus}.lib
+	mv Audio{,_rus}.dcm
+	default
+}
 src_install() {
 	insinto /usr/share/kicad/library
-	doins library/*
+	doins *
 }
