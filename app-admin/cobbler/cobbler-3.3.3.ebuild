@@ -22,7 +22,7 @@ DEPEND="
 		www-servers/nginx
 	)
 	|| ( net-misc/curl net-misc/wget )
-	createrepo_c
+	app-arch/createrepo_c
 	dev-libs/libisoburn
 	www-servers/gunicorn
 	dev-python/cheetah3
