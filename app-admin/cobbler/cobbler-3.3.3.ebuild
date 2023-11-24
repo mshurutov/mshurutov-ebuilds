@@ -3,6 +3,10 @@
 
 EAPI=8
 
+PYTHON_COMPAT=( python3_11 )
+
+inherit autotools multilib python-any-r1 git-r3
+
 DESCRIPTION="Cobbler is a versatile Linux deployment server."
 HOMEPAGE="https://cobbler.github.io/"
 SRC_URI="https://github.com/${P}/${P}/archive/refs/tags/v${PV}.tar.gz"
@@ -17,7 +21,7 @@ DEPEND="
 		www-servers/lighttpd
 		www-servers/nginx
 	)
-	|| (net-misc/curl net-misc/wget)
+	|| ( net-misc/curl net-misc/wget )
 	createrepo_c
 	dev-libs/libisoburn
 	www-servers/gunicorn
