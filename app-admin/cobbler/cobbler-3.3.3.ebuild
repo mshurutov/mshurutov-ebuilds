@@ -9,7 +9,7 @@ inherit autotools multilib python-any-r1 git-r3
 
 DESCRIPTION="Cobbler is a versatile Linux deployment server."
 HOMEPAGE="https://cobbler.github.io/"
-SRC_URI="https://github.com/${P}/${P}/archive/refs/tags/v${PV}.tar.gz"
+SRC_URI="https://github.com/${PN}/${PN}/archive/refs/tags/v${PV}.tar.gz"
 
 LICENSE=""
 SLOT="0"
