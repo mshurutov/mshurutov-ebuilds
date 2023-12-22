@@ -9,17 +9,27 @@ inherit autotools multilib python-any-r1 git-r3
 
 DESCRIPTION="Cobbler is a versatile Linux deployment server."
 HOMEPAGE="https://cobbler.github.io/"
-SRC_URI="https://github.com/${PN}/${PN}/archive/refs/tags/v${PV}.tar.gz"
+EGIT_REPO_URI="https://github.com/${PN}/${PN}.git"
+if [ "${PR}" = "r0" ]; then
+	EGIT_COMMIT="v${PV}"
+else
+	EGIT_BRANCH="${PR/r/release}"
+fi
+#SRC_URI="https://github.com/${PN}/${PN}/archive/refs/tags/v${PV}.tar.gz"
 
 LICENSE=""
 SLOT="0"
 KEYWORDS="~amd64"
 
+PATCHES=(
+	"${FILESDIR}/00_${PN}-remove-setup_command.patch"
+)
+
 DEPEND="
 	|| (
+		www-servers/nginx
 		www-servers/apache
 		www-servers/lighttpd
-		www-servers/nginx
 	)
 	|| ( net-misc/curl net-misc/wget )
 	app-arch/createrepo_c

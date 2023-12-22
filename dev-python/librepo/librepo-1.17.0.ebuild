@@ -3,10 +3,11 @@
 
 EAPI=8
 
-DISTUTILS_USE_PEP517=hatchling
+#DISTUTILS_USE_PEP517=hatchling
+DISTUTILS_USE_PEP517=setuptools
 PYTHON_COMPAT=( python3_11 )
 
-inherit distutils-r1 pypi
+inherit distutils-r1 pypi cmake
 
 DESCRIPTION=""
 HOMEPAGE="
@@ -20,6 +21,7 @@ SRC_URI="
 LICENSE="LGPL-2.1+"
 SLOT="0"
 KEYWORDS="~amd64"
+IUSE="selinux test"
 
 RDEPEND="
 "
@@ -30,6 +32,9 @@ BDEPEND="
 	dev-libs/check
 	dev-util/cmake
 	sys-devel/gcc
+	selinux? (
+		sys-libs/libselinux
+	)
 	dev-libs/glib
 	sys-apps/attr
 	net-misc/curl
@@ -38,3 +43,10 @@ BDEPEND="
 "
 
 distutils_enable_tests pytest
+
+src_configure() {
+	local mycmakeargs=(
+		$(cmake_use_find_package selinux libselinux)
+	)
+	cmake_src_configure
+}

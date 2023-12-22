@@ -15,13 +15,13 @@ EGIT_COMMIT="v${PV}"
 LICENSE="GPL-2"
 SLOT="0"
 KEYWORDS="~amd64 ~x86"
-IUSE="libvirt"
 
 DEPEND="
 	${PYTHON_DEPS}
+	sys-cluster/corosync
 	dev-libs/libxslt
 	dev-libs/nss
-	libvirt? ( app-emulation/libvirt )
+	app-emulation/libvirt
 	$(python_gen_any_dep '
 		dev-python/pexpect[${PYTHON_USEDEP}]
 		dev-python/pycurl[${PYTHON_USEDEP}]
@@ -36,7 +36,6 @@ src_prepare() {
 
 src_configure() {
 	econf \
-		$(use_enable libvirt libvirt-plugin) \
 		--docdir=/usr/share/doc/${P} \
 		--libdir=/usr/$(get_libdir) \
 		--localstatedir=/var
