@@ -3,15 +3,19 @@
 
 EAPI=8
 
+DISTUTILS_USE_PEP517=setuptools
 PYTHON_COMPAT=( python3_11 )
 
-inherit autotools multilib python-any-r1 git-r3
+inherit autotools multilib git-r3 systemd python-any-r1
 
 DESCRIPTION="Cobbler is a versatile Linux deployment server."
 HOMEPAGE="https://cobbler.github.io/"
 EGIT_REPO_URI="https://github.com/${PN}/${PN}.git"
 if [ "${PR}" = "r0" ]; then
 	EGIT_COMMIT="v${PV}"
+	PATCHES=(
+		"${FILESDIR}/00_${PN}-remove-setup_command.patch"
+	)
 else
 	EGIT_BRANCH="${PR/r/release}"
 fi
@@ -21,9 +25,6 @@ LICENSE=""
 SLOT="0"
 KEYWORDS="~amd64"
 
-PATCHES=(
-	"${FILESDIR}/00_${PN}-remove-setup_command.patch"
-)
 
 DEPEND="
 	|| (
@@ -56,4 +57,13 @@ BDEPEND="
 	dev-python/coverage
 	dev-libs/openssl
 "
+src_install() {
 
+	if [[ -f Makefile ]] || [[ -f GNUmakefile ]] || [[ -f makefile ]] ; then
+		emake DESTDIR="${D}" install
+	fi
+	einstalldocs
+
+	systemd_dounit config/service/cobblerd.service
+	systemd_dounit ${FILESDIR}/cobblerd-gunicorn.service
+}
