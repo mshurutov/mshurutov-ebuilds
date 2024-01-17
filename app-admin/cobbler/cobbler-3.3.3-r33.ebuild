@@ -33,21 +33,22 @@ DEPEND="
 		www-servers/lighttpd
 	)
 	|| ( net-misc/curl net-misc/wget )
+	|| ( net-ftp/atftp net-ftp/tftp-hpa )
 	app-arch/createrepo_c
+	app-admin/koan
 	dev-libs/libisoburn
-	www-servers/gunicorn
 	dev-python/cheetah3
-	dev-python/dnspython
-	dev-python/requests
 	dev-python/distro
-	dev-python/netaddr
+	dev-python/dnspython
 	dev-python/librepo
-	dev-python/schema
+	dev-python/netaddr
 	dev-python/pyyaml
-	sys-cluster/fence-agents
+	dev-python/requests
+	dev-python/schema
 	net-misc/rsync
 	sys-boot/syslinux
-	|| ( net-ftp/atftp net-ftp/tftp-hpa )
+	sys-cluster/fence-agents
+	www-servers/gunicorn
 "
 RDEPEND="${DEPEND}"
 BDEPEND="
