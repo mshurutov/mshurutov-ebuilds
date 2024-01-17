@@ -21,7 +21,7 @@ else
 fi
 #SRC_URI="https://github.com/${PN}/${PN}/archive/refs/tags/v${PV}.tar.gz"
 
-LICENSE=""
+LICENSE="GPL-2+"
 SLOT="0"
 KEYWORDS="~amd64"
 
