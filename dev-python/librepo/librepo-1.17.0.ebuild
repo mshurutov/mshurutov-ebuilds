@@ -30,7 +30,7 @@ BDEPEND="
 		dev-python/pyxattr
 	)
 	dev-libs/check
-	dev-util/cmake
+	dev-build/cmake
 	sys-devel/gcc
 	selinux? (
 		sys-libs/libselinux
