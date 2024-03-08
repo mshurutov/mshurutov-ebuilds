@@ -53,7 +53,7 @@ DEPEND="
 RDEPEND="${DEPEND}"
 BDEPEND="
 	dev-vcs/git
-	sys-devel/make
+	dev-build/make
 	dev-python/sphinx
 	dev-python/coverage
 	dev-libs/openssl
