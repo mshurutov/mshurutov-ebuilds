@@ -24,4 +24,6 @@ DEPEND="
 	dev-python/libvirt-python
 "
 RDEPEND="${DEPEND}"
-BDEPEND=""
+BDEPEND="
+	dev-python/sphinx
+"
