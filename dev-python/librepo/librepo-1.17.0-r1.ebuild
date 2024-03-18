@@ -46,6 +46,7 @@ distutils_enable_tests pytest
 
 src_configure() {
 	local mycmakeargs=(
+		-DENABLE_SELINUX=(usex selinux OFF)
 		$(cmake_use_find_package selinux libselinux)
 	)
 	cmake_src_configure
