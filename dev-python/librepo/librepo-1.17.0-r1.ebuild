@@ -21,11 +21,14 @@ SRC_URI="
 LICENSE="LGPL-2.1+"
 SLOT="0"
 KEYWORDS="~amd64"
-IUSE="selinux test"
+IUSE="doc selinux test"
 
 RDEPEND="
 "
 BDEPEND="
+	doc? (
+		app-text/doxygen
+	)
 	test? (
 		dev-python/pyxattr
 	)
@@ -47,6 +50,7 @@ distutils_enable_tests pytest
 src_configure() {
 	local mycmakeargs=(
 		-DENABLE_SELINUX=$(usex selinux ON OFF)
+		-DENABLE_DOCS=$(usex doc ON OFF)
 		$(cmake_use_find_package selinux libselinux)
 	)
 	cmake_src_configure
