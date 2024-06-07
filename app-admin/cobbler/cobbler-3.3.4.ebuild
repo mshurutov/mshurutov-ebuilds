@@ -13,9 +13,6 @@ HOMEPAGE="https://cobbler.github.io/"
 EGIT_REPO_URI="https://github.com/${PN}/${PN}.git"
 if [ "${PR}" = "r0" ]; then
 	EGIT_COMMIT="v${PV}"
-	PATCHES=(
-		"${FILESDIR}/00_${PN}-remove-setup_command.patch"
-	)
 else
 	EGIT_BRANCH="${PR/r/release}"
 fi
