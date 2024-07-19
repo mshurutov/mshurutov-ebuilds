@@ -13,38 +13,39 @@ EGIT_COMMIT=${PV}
 LICENSE="GPL-2"
 SLOT="0"
 KEYWORDS="~amd64"
-IUSE="+djvu +dvi +introspection rar +t1lib"
+IUSE="+djvu dvi +epub +introspection +pdf rar t1lib tiff xps"
 
 DEPEND="
-	introspection? ( dev-libs/gobject-introspection )
+	>=app-arch/libarchive-3.6.0
+	>=app-crypt/libsecret-0.5
+	app-text/yelp-tools
+	>=dev-libs/glib-2.36.0
+	>=dev-libs/libxml2-2.5.0
+	dev-libs/libxslt
+	dev-libs/mathjax
 	dev-util/intltool
-	app-arch/libarchive
-	djvu? (
-		app-text/djvu
-	)
-	x11-libs/gtk+:3
-	dev-libs/glib
-	app-text/libgxps
+	mate-base/mate-common
+	sys-apps/lsb-release
+	sys-libs/zlib
+	>=x11-libs/gtk+-3.14.0:3[cups]
+	x11-libs/libSM
+	x11-libs/libX11
+	>=x11-libs/xapp-2.5.0
+	djvu? ( >=app-text/djvu-3.5.17 )
 	dvi? (
-		app-text/libspectre
+		>=app-text/libspectre-0.2.0
 		dev-libs/kpathsea
 	)
-	app-text/poppler[cairo]
-	app-crypt/libsecret
-	x11-libs/libSM
-	media-libs/tiff
-	net-libs/webkit-gtk
-	x11-libs/xapp
-	x11-libs/libX11
-	dev-libs/libxml2
-	sys-apps/lsb-release
-	mate-base/mate-common
-	dev-libs/libxslt
-	app-text/yelp-tools
-	sys-libs/zlib
-	media-libs/t1lib
-	x11-libs/gdk-pixbuf
+	epub? ( >=net-libs/webkit-gtk-2.4.3 )
+	introspection? ( dev-libs/gobject-introspection )
+	pdf? (
+		>=x11-libs/cairo-1.14.0
+		app-text/poppler[cairo]
+	)
 	rar? ( app-arch/unrar )
+	t1lib? ( media-libs/t1lib )
+	tiff? ( media-libs/tiff )
+	xps? ( >=app-text/libgxps-0.2.1 )
 "
 RDEPEND="${DEPEND}
 	gnome-base/gvfs
@@ -56,12 +57,17 @@ BDEPEND="
 src_configure() {
 	local emesonargs=(
 		$(
-			$(meson_feature djvu)
-			$(meson_feature dvi)
-			$(meson_feature t1lib)
-			-Dpixbuf=enabled
-			-Dcomics=enabled
+			-Dpixbuf=true
+			-Dcomics=true
+			$(meson_use djvu)
+			$(meson_use dvi)
+			$(meson_use epub)
 			$(meson_use introspection)
+			$(meson_use pdf)
+			$(meson_use rar)
+			$(meson_use t1lib)
+			$(meson_use tiff)
+			$(meson_use xps)
 		)
 	)
 	meson_src_configure
