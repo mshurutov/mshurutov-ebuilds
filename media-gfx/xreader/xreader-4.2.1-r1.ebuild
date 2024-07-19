@@ -57,6 +57,7 @@ BDEPEND="
 src_configure() {
 	local emesonargs=(
 		$(
+			-Dmathjax_directory=/usr/share/mathjax
 			-Dpixbuf=true
 			-Dcomics=true
 			$(meson_use djvu)
