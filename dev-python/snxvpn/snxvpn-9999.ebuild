@@ -16,6 +16,7 @@ SRC_URI="
 	https://github.com/slacr44/snxvpn/archive/refs/heads/master.zip
 "
 
+S="${WORKDIR}/${PN}-master"
 
 LICENSE="BSD-3-Clause"
 SLOT="0"
