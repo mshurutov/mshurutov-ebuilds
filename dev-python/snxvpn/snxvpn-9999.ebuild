@@ -3,7 +3,7 @@
 
 EAPI=8
 
-DISTUTILS_USE_PEP517=hatchling
+DISTUTILS_USE_PEP517=setuptools
 PYTHON_COMPAT=( python3_12 )
 
 inherit distutils-r1 pypi
@@ -23,13 +23,11 @@ SLOT="0"
 KEYWORDS="~amd64"
 
 RDEPEND="
-	dev-python/beautifulsoup4
-	dev-python/pycryptodome
-	dev-python/lxml
-	dev-python/rsa
+	dev-python/beautifulsoup4[${PYTHON_USEDEP}]
+	dev-python/pycryptodome[${PYTHON_USEDEP}]
+	dev-python/lxml[${PYTHON_USEDEP}]
+	dev-python/rsa[${PYTHON_USEDEP}]
 "
-BDEPEND="
-	$RDEPEND
-"
+BDEPEND="$RDEPEND"
 
 distutils_enable_tests pytest
