@@ -6,11 +6,14 @@ EAPI=8
 DISTUTILS_USE_PEP517=hatchling
 PYTHON_COMPAT=( python3_12 )
 
-inherit distutils-r1 git-r3
+inherit distutils-r1 pypi
 
 DESCRIPTION=""
-EGIT_REPO_URI="
+HOMEPAGE="
 	https://github.com/slacr44/snxvpn
+"
+SRC_URI="
+	https://github.com/slacr44/snxvpn/archive/refs/heads/master.zip
 "
 
 
