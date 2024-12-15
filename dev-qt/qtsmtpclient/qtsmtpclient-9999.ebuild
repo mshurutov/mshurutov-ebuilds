@@ -14,7 +14,7 @@ LICENSE="LGPL-2.1"
 SLOT="0"
 KEYWORDS="amd64"
 
-S="${WORKDIR}/SmtpClient-for-Qt"
+#S="${WORKDIR}/SmtpClient-for-Qt"
 
 RDEPEND="
 	dev-qt/qtbase:6
