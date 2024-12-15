@@ -27,8 +27,8 @@ RDEPEND="
 	dev-qt/qthttpserver:6
 	dev-qt/qt5compat:6
 	dev-qt/qtwebsockets:6
+	dev-qt/qtsmtpclient
 	dev-libs/quazip[qt6]
-	dev-libs/qtsmtpclient
 	"
 
 DEPEND="${RDEPEND}"
