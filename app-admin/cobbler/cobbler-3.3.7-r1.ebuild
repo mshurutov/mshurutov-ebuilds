@@ -23,10 +23,7 @@ SLOT="0"
 KEYWORDS="~amd64"
 
 IUSE="apache lighttpd +nginx"
-REQUIRED_USE="
-	apache ( && (!lighttpd !nginx ) )
-	lighttpd ( && (!apache !nginx ) )
-	nginx ( && (!apache !lighttpd ) )"
+REQUIRED_USE="^^ ( apache lighttpd nginx )"
 
 DEPEND="
 	apache? ( www-servers/apache )
