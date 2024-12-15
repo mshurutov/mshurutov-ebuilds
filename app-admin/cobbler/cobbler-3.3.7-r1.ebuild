@@ -22,13 +22,16 @@ LICENSE="GPL-2+"
 SLOT="0"
 KEYWORDS="~amd64"
 
+IUSE="apache lighttpd +nginx"
+REQUIRED_USE="
+	apache ( && (!lighttpd !nginx ) )
+	lighttpd ( && (!apache !nginx ) )
+	nginx ( && (!apache !lighttpd ) )"
 
 DEPEND="
-	|| (
-		www-servers/nginx
-		www-servers/apache
-		www-servers/lighttpd
-	)
+	apache? ( www-servers/apache )
+	lighttpd? ( www-servers/lighttpd )
+	nginx? ( www-servers/nginx )
 	|| ( net-misc/curl net-misc/wget )
 	|| ( net-ftp/atftp net-ftp/tftp-hpa )
 	app-arch/createrepo_c
@@ -47,6 +50,7 @@ DEPEND="
 	sys-cluster/fence-agents
 	www-servers/gunicorn
 "
+
 RDEPEND="${DEPEND}"
 BDEPEND="
 	dev-vcs/git
@@ -55,12 +59,28 @@ BDEPEND="
 	dev-python/coverage
 	dev-libs/openssl
 "
+src_prepare() {
+	if use nginx; then
+		sed -e 's/@@httpd_service@@/nginx.service/' config/service/cobblerd.service
+	fi
+	if use apache; then
+		sed -e 's/@@httpd_service@@/apache2.service' config/service/cobblerd.service
+	fi
+	if use lighttpd; then
+		sed -e 's/@@httpd_service@@/lighttpd.service' config/service/cobblerd.service
+	fi
+}
 src_install() {
 
 	if [[ -f Makefile ]] || [[ -f GNUmakefile ]] || [[ -f makefile ]] ; then
 		emake DESTDIR="${D}" install
 	fi
 	einstalldocs
+
+	if use nginx; then
+		insinto /etc/nginx/conf.d
+		doins config/nginx/cobbler.conf
+	fi
 
 	systemd_dounit config/service/cobblerd.service
 	systemd_dounit ${FILESDIR}/cobblerd-gunicorn.service

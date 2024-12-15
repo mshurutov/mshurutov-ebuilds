@@ -6,15 +6,15 @@
 
 EAPI=8
 
-inherit cmake
+inherit cmake git-r3
 
 CMAKE_MAKEFILE_GENERATOR=emake
 
 DESCRIPTION="Freelib is book library manager"
 HOMEPAGE="https://github.com/petrovvlad/freeLib"
-SRC_URI="https://github.com/petrovvlad/freeLib/archive/refs/tags/v${PV}.tar.gz -> ${P}.tar.gz"
-KEYWORDS="amd64"
-S=${WORKDIR}/freeLib-${PV}
+KEYWORDS="~amd64"
+EGIT_REPO_URI="https://github.com/petrovvlad/freeLib.git"
+EGIT_BRANCH=master
 
 LICENSE="GPL-2"
 SLOT="0"
@@ -28,7 +28,6 @@ RDEPEND="
 	dev-qt/qt5compat:6
 	dev-qt/qtwebsockets:6
 	dev-libs/quazip[qt6]
-	dev-libs/qtsmtpclient
 	"
 
 DEPEND="${RDEPEND}"
