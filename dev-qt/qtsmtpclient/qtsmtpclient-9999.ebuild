@@ -12,7 +12,7 @@ EGIT_BRANCH="master"
 
 LICENSE="LGPL-2.1"
 SLOT="0"
-KEYWORDS="~amd64"
+KEYWORDS="amd64"
 
 S="${WORKDIR}/SmtpClient-for-Qt"
 
