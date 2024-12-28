@@ -77,7 +77,7 @@ src_install() {
 
 	if use nginx; then
 		insinto /etc/nginx/conf.d
-		doins config/nginx/cobbler.conf
+		doins ${FILESDIR}/nginx/cobbler.conf
 	fi
 
 	systemd_dounit config/service/cobblerd.service
