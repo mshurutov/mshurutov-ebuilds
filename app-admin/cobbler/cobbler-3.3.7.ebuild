@@ -66,6 +66,7 @@ src_prepare() {
 	if use lighttpd; then
 		sed -e 's/@@httpd_service@@/lighttpd.service' config/service/cobblerd.service
 	fi
+	default
 }
 src_install() {
 
