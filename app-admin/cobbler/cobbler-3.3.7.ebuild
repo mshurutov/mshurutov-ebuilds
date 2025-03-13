@@ -74,6 +74,7 @@ src_install() {
 		emake DESTDIR="${D}" install
 	fi
 	einstalldocs
+	keepdir /var/log/cobbler/
 
 	if use nginx; then
 		insinto /etc/nginx/conf.d
