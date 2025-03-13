@@ -58,13 +58,13 @@ BDEPEND="
 "
 src_prepare() {
 	if use nginx; then
-		sed -e 's/@@httpd_service@@/nginx.service/' config/service/cobblerd.service
+		sed -ie 's/@@httpd_service@@/nginx.service/' config/service/cobblerd.service
 	fi
 	if use apache; then
-		sed -e 's/@@httpd_service@@/apache2.service' config/service/cobblerd.service
+		sed -ie 's/@@httpd_service@@/apache2.service' config/service/cobblerd.service
 	fi
 	if use lighttpd; then
-		sed -e 's/@@httpd_service@@/lighttpd.service' config/service/cobblerd.service
+		sed -ie 's/@@httpd_service@@/lighttpd.service' config/service/cobblerd.service
 	fi
 	default
 }
