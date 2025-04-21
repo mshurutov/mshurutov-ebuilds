@@ -38,6 +38,7 @@ DEPEND="
 	dev-python/distro
 	dev-python/dnspython
 	dev-python/librepo
+	dev-python/python-magic
 	dev-python/netaddr
 	dev-python/pyyaml
 	dev-python/requests
