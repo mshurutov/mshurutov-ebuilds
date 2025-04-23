@@ -84,5 +84,5 @@ src_install() {
 	fi
 
 	systemd_dounit config/service/cobblerd.service
-	systemd_dounit ${FILESDIR}/cobblerd-gunicorn.service
+	systemd_dounit config/service/cobblerd-gunicorn.service
 }
