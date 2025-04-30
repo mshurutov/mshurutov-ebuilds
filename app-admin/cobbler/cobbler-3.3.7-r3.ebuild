@@ -70,8 +70,8 @@ src_prepare() {
 	fi
 	default
 }
-src_install() {
 
+src_install() {
 	if [[ -f Makefile ]] || [[ -f GNUmakefile ]] || [[ -f makefile ]] ; then
 		emake DESTDIR="${D}" install
 	fi
@@ -84,5 +84,6 @@ src_install() {
 	fi
 
 	systemd_dounit config/service/cobblerd.service
-	systemd_dounit config/service/cobblerd-gunicorn.service
+	systemd_dounit ${FILESDIR}/cobblerd-gunicorn.service
+	systemd_dounit ${FILESDIR}/gunicorn.socket
 }

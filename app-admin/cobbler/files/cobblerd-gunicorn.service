@@ -1,0 +1,27 @@
+[Unit]
+Description=Cobbler Gunicorn Daemon
+Requires=gunicorn.socket
+After=syslog.target network.target
+Wants=cobblerd.service
+
+[Service]
+# gunicorn can let systemd know when it is ready
+Type=notify
+NotifyAccess=main
+# the specific user that our service will run as
+User=nginx
+Group=nginx
+# this user can be transiently created by systemd
+# DynamicUser=true
+RuntimeDirectory=gunicorn
+WorkingDirectory=/usr/lib/python3.12/site-packages
+ExecStart=/usr/bin/gunicorn cobbler.services:application
+ExecReload=/bin/kill -s HUP $MAINPID
+KillMode=process
+TimeoutStopSec=5
+PrivateTmp=true
+# if your app does not need administrative capabilities, let systemd know
+# ProtectSystem=strict
+
+[Install]
+WantedBy=multi-user.target
