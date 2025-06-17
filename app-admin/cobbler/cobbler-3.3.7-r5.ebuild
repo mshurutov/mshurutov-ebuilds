@@ -49,8 +49,9 @@ RDEPEND="${DEPEND}"
 BDEPEND="
 	dev-vcs/git
 	dev-build/make
-	dev-python/sphinx
 	dev-python/coverage
+	dev-python/pip
+	dev-python/sphinx
 	dev-libs/openssl
 "
 PATCHES=(
