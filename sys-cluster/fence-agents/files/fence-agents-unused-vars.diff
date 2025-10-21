@@ -1,0 +1,18 @@
+diff '--color=auto' -ru fence-agents-4.16.0.orig/agents/virt/server/virt-serial.c fence-agents-4.16.0/agents/virt/server/virt-serial.c
+--- fence-agents-4.16.0.orig/agents/virt/server/virt-serial.c   2024-11-08 11:01:45.000000000 +0300
++++ fence-agents-4.16.0/agents/virt/server/virt-serial.c        2025-10-21 16:46:59.446535422 +0300
+@@ -25,6 +25,14 @@
+ #define DEBUG1(fmt, ...) dbg_printf(5, "%s:%d: " fmt "\n", \
+         __func__, __LINE__, __VA_ARGS__)
+ 
++#if LIBXML_VERSION >= 21400
++#if __GNUC__ * 100 + __GNUC_MINOR__ >= 207
++#define ATTRIBUTE_UNUSED __attribute__((unused))
++#else
++#define ATTRIBUTE_UNUSED
++#endif
++#endif
++
+ #include "serial.h"
+ 
+ #define STREQ(a,b) (strcmp((a),(b)) == 0)
