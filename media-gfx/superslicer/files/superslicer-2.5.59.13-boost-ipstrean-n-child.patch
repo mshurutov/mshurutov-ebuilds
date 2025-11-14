@@ -1,0 +1,10 @@
+--- a/src/libslic3r/GCode/PostProcessor.cpp     2024-07-01 18:00:11.000000000 +0300
++++ b/src/libslic3r/GCode/PostProcessor.cpp     2025-11-14 20:11:20.151660382 +0300
+@@ -22,6 +22,8 @@
+ // POSIX
+ #include <sstream>
+ #include <boost/process.hpp>
++#include <boost/process/v1/pipe.hpp>
++#include <boost/process/v1/child.hpp>
+ #include <unistd.h>     //readlink
+ #endif
