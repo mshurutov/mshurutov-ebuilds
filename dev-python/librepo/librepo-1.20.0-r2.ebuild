@@ -31,6 +31,7 @@ BDEPEND="
 	)
 	test? (
 		dev-python/pyxattr
+		dev-python/gpgmepy
 	)
 	dev-libs/check
 	dev-build/cmake
@@ -42,7 +43,7 @@ BDEPEND="
 	sys-apps/attr
 	net-misc/curl
 	dev-libs/openssl
-	app-crypt/gpgme[python]
+	app-crypt/gpgme
 "
 
 distutils_enable_tests pytest
