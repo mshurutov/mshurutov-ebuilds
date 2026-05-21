@@ -4,18 +4,14 @@
 EAPI=8
 
 DISTUTILS_USE_PEP517=setuptools
-PYTHON_COMPAT=( python3_12 )
+PYTHON_COMPAT=( python3_{13..14} )
 
 inherit autotools multilib git-r3 systemd python-any-r1
 
 DESCRIPTION="Cobbler is a versatile Linux deployment server."
 HOMEPAGE="https://cobbler.github.io/"
 EGIT_REPO_URI="https://github.com/${PN}/${PN}.git"
-if [ "${PR}" = "r0" ]; then
-	EGIT_COMMIT="v${PV}"
-else
-	EGIT_BRANCH="${PR/r/release}"
-fi
+EGIT_COMMIT="v${PV}"
 #SRC_URI="https://github.com/${PN}/${PN}/archive/refs/tags/v${PV}.tar.gz"
 
 LICENSE="GPL-2+"
@@ -53,10 +49,16 @@ RDEPEND="${DEPEND}"
 BDEPEND="
 	dev-vcs/git
 	dev-build/make
-	dev-python/sphinx
 	dev-python/coverage
+	dev-python/pip
+	dev-python/sphinx
 	dev-libs/openssl
 "
+PATCHES=(
+	# Return valid distro name and distro version
+	"${FILESDIR}/${PV}/${P}-00-set-os_release.patch"
+)
+
 src_prepare() {
 	if use nginx; then
 		sed -ie 's/@@httpd_service@@/nginx.service/' config/service/cobblerd.service
@@ -69,8 +71,8 @@ src_prepare() {
 	fi
 	default
 }
-src_install() {
 
+src_install() {
 	if [[ -f Makefile ]] || [[ -f GNUmakefile ]] || [[ -f makefile ]] ; then
 		emake DESTDIR="${D}" install
 	fi
@@ -84,4 +86,5 @@ src_install() {
 
 	systemd_dounit config/service/cobblerd.service
 	systemd_dounit ${FILESDIR}/cobblerd-gunicorn.service
+	systemd_dounit ${FILESDIR}/gunicorn.socket
 }

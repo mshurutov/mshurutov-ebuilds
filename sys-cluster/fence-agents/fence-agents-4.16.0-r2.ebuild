@@ -3,7 +3,7 @@
 
 EAPI=8
 
-PYTHON_COMPAT=( python3_13 )
+PYTHON_COMPAT=( python3_{13..14} )
 
 inherit autotools multilib python-any-r1 git-r3
 
