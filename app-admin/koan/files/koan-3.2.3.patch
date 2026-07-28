@@ -1,0 +1,12 @@
+diff '--color=auto' -ur koan-3.2.3.orig/Makefile koan-3.2.3/Makefile
+--- koan-3.2.3.orig/Makefile	2026-07-21 17:30:38.000000000 +0300
++++ koan-3.2.3/Makefile	2026-07-28 17:37:38.078204336 +0300
+@@ -82,7 +82,7 @@
+ 	PYTHONPATH=./koan/ nosetests -v -w tests/cli/ 2>&1 | tee test.log
+ 
+ build:
+-	${PYTHON} -m pip wheel -f .
++	${PYTHON} -m pip wheel .
+ 
+ # Debian/Ubuntu requires an additional parameter in setup.py
+ install: build

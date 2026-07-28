@@ -32,3 +32,7 @@ BDEPEND="
 	dev-python/sphinx
 	dev-python/wheel
 "
+
+PATCHES=(
+	"${FILESDIR}/${P}.patch
+)

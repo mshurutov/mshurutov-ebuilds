@@ -25,5 +25,14 @@ DEPEND="
 "
 RDEPEND="${DEPEND}"
 BDEPEND="
+	app-misc/fdupes
+	dev-python/pip
+	dev-python/setuptools
+	dev-python/setuptools-scm
 	dev-python/sphinx
+	dev-python/wheel
 "
+
+PATCHES=(
+	"${FILESDIR}/${P}.patch
+)
