@@ -34,5 +34,5 @@ BDEPEND="
 "
 
 PATCHES=(
-	"${FILESDIR}/${P}.patch
+	"${FILESDIR}/${P}.patch"
 )
