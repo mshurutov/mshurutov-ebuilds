@@ -6,7 +6,7 @@ EAPI=8
 DISTUTILS_USE_PEP517=setuptools
 PYTHON_COMPAT=( python3_{13..14} )
 
-inherit autotools multilib git-r3 systemd python-any-r1
+inherit autotools distutils-r1 git-r3 systemd multilib
 
 DESCRIPTION="Koan stands for kickstart-over-a-network"
 HOMEPAGE="https://github.com/cobbler/koan"
