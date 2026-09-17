@@ -1,0 +1,11 @@
+diff '--color=auto' -ur cobbler-3.3.9.orig/cobbler/utils.py cobbler-3.3.9/cobbler/utils.py
+--- cobbler-3.3.9.orig/cobbler/utils.py	2026-09-17 20:52:12.142856377 +0300
++++ cobbler-3.3.9/cobbler/utils.py	2026-09-17 20:56:10.924406685 +0300
+@@ -1097,6 +1097,7 @@
+             make = "unknown"
+         return make, float(distro_version)
+ 
++    return distro_name, float(distro_version)
+ 
+ def is_safe_to_hardlink(src: str, dst: str, api) -> bool:
+     """
